@@ -2,11 +2,27 @@
 #include "tools.h"
 #include "Eigen/Dense"
 #include <iostream>
+#include <math.h>
 
 using namespace std;
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using std::vector;
+
+float centerTheta(float theta) {
+  // if theta is too big, bring it down 2pi at a time
+  while (theta > M_PI) {
+    theta -= 2 * M_PI;
+  }
+  
+  // if theta is too small, bring it up 2pi at a time
+  while (theta <= -M_PI) {
+    theta += 2 * M_PI;
+  }
+
+  // return the new theta that is between -pi and pi
+  return theta;
+}
 
 /*
  * Constructor.
