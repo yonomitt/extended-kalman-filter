@@ -7,6 +7,9 @@ build/
 # editor config
 .vscode/
 
+# swap files
+*.swp
+
 # Xcode
 *.pbxuser
 !default.pbxuser
