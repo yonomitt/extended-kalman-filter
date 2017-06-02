@@ -106,12 +106,15 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       // Convert radar from polar to cartesian coordinates and initialize state.
       float ro = measurement_pack.raw_measurements_[0];
       float theta = measurement_pack.raw_measurements_[1];
+      float ro_prime = measurement_pack.raw_measurements_[2];
 
       // center theta betwen -pi and pi
       theta = centerTheta(theta);
 
-      ekf_.x_[0] = ro * sin(theta);
-      ekf_.x_[1] = ro * cos(theta);
+      ekf_.x_[0] = ro * cos(theta);
+      ekf_.x_[1] = ro * sin(theta);
+      ekf_.x_[2] = ro_prime * cos(theta);
+      ekf_.x_[3] = ro_prime * sin(theta);
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       ekf_.x_[0] = measurement_pack.raw_measurements_[0];
