@@ -47,6 +47,10 @@ FusionEKF::FusionEKF() {
                  0, 0.0009,    0,
                  0,      0, 0.09;
 
+  // measurement matrix - laser
+  H_laser_ << 1, 0, 0, 0,
+	      0, 1, 1, 1;
+
   //
   // Finish initializing the FusionEKF.
   // Set the process and measurement noises
