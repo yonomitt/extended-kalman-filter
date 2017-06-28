@@ -57,26 +57,31 @@ void KalmanFilter::Update(const VectorXd &z) {
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
   // Extended Kalman filter update
-  float ro = sqrt(x_[0] * x_[0] + x_[1] * x_[1]);
-  float phi;
-  float ro_prime;
+  float px = x_[0];
+  float py = x_[1];
+  float vx = x_[2];
+  float vy = x_[3];
 
-  if (fabs(x_[0]) < 0.0001) {
+  float ro = sqrt(px * px + py * py);
+  float phi;
+  float ro_dot;
+
+  if (fabs(px) < 0.0001) {
     // p'x is too small, set phi to 0
     phi = 0.0;
   } else {
-    phi = atan2(x_[1], x_[0]);
+    phi = atan2(py, px);
   }
 
   if (fabs(ro) < 0.0001) {
     // ro is too small, so set ro' to 0
-    ro_prime = 0.0;
+    ro_dot = 0.0;
   } else {
-    ro_prime = (x_[0] * x_[2] + x_[1] * x_[3]) / ro;
+    ro_dot = (px * vx + py * vy) / ro;
   }
 
   VectorXd z_pred = VectorXd(3);
-  z_pred << ro, phi, ro_prime;
+  z_pred << ro, phi, ro_dot;
 
   VectorXd y = z - z_pred;
 
