@@ -3,6 +3,21 @@
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
+float centerAngle(float phi) {
+  // if phi is too big, bring it down 2pi at a time
+  while (phi > M_PI) {
+    phi -= 2 * M_PI;
+  }
+  
+  // if phi is too small, bring it up 2pi at a time
+  while (phi < -M_PI) {
+    phi += 2 * M_PI;
+  }
+  
+  // return the new phi that is between -pi and pi
+  return phi;
+}
+
 KalmanFilter::KalmanFilter() {}
 
 KalmanFilter::~KalmanFilter() {}
@@ -64,6 +79,9 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   z_pred << ro, phi, ro_prime;
 
   VectorXd y = z - z_pred;
+
+  y[1] = centerAngle(y[1]);
+
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();

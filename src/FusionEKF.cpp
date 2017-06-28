@@ -9,21 +9,6 @@ using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using std::vector;
 
-float centerAngle(float phi) {
-  // if phi is too big, bring it down 2pi at a time
-  while (phi > M_PI) {
-    phi -= 2 * M_PI;
-  }
-  
-  // if phi is too small, bring it up 2pi at a time
-  while (phi <= -M_PI) {
-    phi += 2 * M_PI;
-  }
-
-  // return the new phi that is between -pi and pi
-  return phi;
-}
-
 /*
  * Constructor.
  */
@@ -84,7 +69,6 @@ FusionEKF::~FusionEKF() {}
 
 void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
-
   /*****************************************************************************
    *  Initialization
    ****************************************************************************/
@@ -107,9 +91,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       float ro = measurement_pack.raw_measurements_[0];
       float phi = measurement_pack.raw_measurements_[1];
       float ro_prime = measurement_pack.raw_measurements_[2];
-
-      // center phi betwen -pi and pi
-      phi = centerAngle(phi);
 
       ekf_.x_[0] = ro * cos(phi);
       ekf_.x_[1] = ro * sin(phi);
