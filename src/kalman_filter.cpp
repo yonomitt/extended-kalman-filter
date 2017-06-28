@@ -38,10 +38,9 @@ void KalmanFilter::Predict() {
   P_ = F_ * P_ * Ft + Q_;
 }
 
-void KalmanFilter::Update(const VectorXd &z) {
-  // Normal Kalman filter update
-  VectorXd z_pred = H_ * x_;
-  VectorXd y = z - z_pred;
+void KalmanFilter::UpdateCommon(const VectorXd &y) {
+  // The common calculations for both the normal
+  // and extended kalman filters
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();
@@ -53,6 +52,14 @@ void KalmanFilter::Update(const VectorXd &z) {
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * H_) * P_;
+}
+
+void KalmanFilter::Update(const VectorXd &z) {
+  // Normal Kalman filter update
+  VectorXd z_pred = H_ * x_;
+  VectorXd y = z - z_pred;
+
+  UpdateCommon(y);
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
@@ -87,15 +94,5 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 
   y[1] = centerAngle(y[1]);
 
-  MatrixXd Ht = H_.transpose();
-  MatrixXd S = H_ * P_ * Ht + R_;
-  MatrixXd Si = S.inverse();
-  MatrixXd PHt = P_ * Ht;
-  MatrixXd K = PHt * Si;
-
-  // new estimate
-  x_ = x_ + (K * y);
-  long x_size = x_.size();
-  MatrixXd I = MatrixXd::Identity(x_size, x_size);
-  P_ = (I - K * H_) * P_;
+  UpdateCommon(y);
 }

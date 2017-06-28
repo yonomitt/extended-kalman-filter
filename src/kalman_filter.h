@@ -3,6 +3,14 @@
 #include "Eigen/Dense"
 
 class KalmanFilter {
+private:
+  /**
+   * Contains the common calculations for the update step
+   * for both the normal and extended kalman filters
+   * @param y The prediction error
+   */
+  void UpdateCommon(const Eigen::VectorXd &y);
+
 public:
 
   // state vector
